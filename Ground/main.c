@@ -25,7 +25,7 @@
 #define FREQ_TERMINAL_WRITE 10
 
 // Constants for computing the battery voltage from the received ADC value
-#define VCC 5.005
+#define VCC 4.994
 #define DIVISOR 3.083
 
 void *joystickUpdater(void *argument);
