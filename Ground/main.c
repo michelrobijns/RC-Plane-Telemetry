@@ -156,17 +156,8 @@ void* terminalWriter(__attribute__ ((unused)) void *argument)
 {
     while (1)
     {
-//         printf("Throttle: %3d, ", throttle);
-//         printf("Roll: %3d, ", roll);
-//         printf("Pitch: %3d, ", pitch);
-//         printf("Yaw: %3d, ", yaw);
-//         printf("Engine armed: %1d, ", button1);
-        printf("Battery voltage: %2.2f V. ", voltage);
-        printf("Battery voltage ADC value: %d. ", ADCValue);
-        printf("Battery voltage ADC value top: %d. ", ADCValue2);
-        printf("Battery voltage ADC value bot: %d.", ADCValue1);
-        printf("\n");
-        
+        printf("Bat volt: % 2.2f V", voltage);
+        printf("\r");
         fflush(stdout);
         
         usleep(1000000 / FREQ_TERMINAL_WRITE);

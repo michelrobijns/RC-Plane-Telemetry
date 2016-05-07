@@ -6,11 +6,11 @@
 #
 
 target = main
-dependencies = joystick.h serial.h
-objects = main.o joystick.o serial.o
+dependencies = serial.h
+objects = main.o serial.o
 
 cc = /usr/bin/gcc
-cFlags = -I -g -Wall -Os -Wextra -std=gnu99 -pthread -lrt
+cFlags = -I -g -Wall -Os -Wextra -std=gnu99 -pthread
 
 all: $(target)
 
