@@ -1,7 +1,6 @@
 #
-# Makefile for compiling ATmega328P projects and programming the microcontroller
+# Makefile for compiling ATmega328P projects
 #
-# Created: 4/6/2015
 # Author: Michel Robijns
 #
 

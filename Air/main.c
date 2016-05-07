@@ -1,10 +1,9 @@
 /*
  * main.c
  *
- * Created: 7/23/2015
  * Author: Michel Robijns
  * 
- * This file is part of avrplane which is released under the MIT license.
+ * This file is part of avr-telemetry which is released under the MIT license.
  * See the file LICENSE or go to http://opensource.org/licenses/MIT for full
  * license details.
  */
@@ -14,7 +13,6 @@
 #include <avr/io.h>
 #include <string.h>
 #include <avr/interrupt.h>
-
 #include "timers.h"
 #include "serial.h"
 #include "adc.h"
@@ -54,16 +52,21 @@ void doAt10kHz(void)
     counter1++;
     counter2++;
 
-    if (counter1 == 4) // Triggered 2500 times per second
+    // Triggered 2500 times per second
+    if (counter1 == 4)
     {
-        updateADCs();
+        updateADC();
         counter1 = 0;
     }
 
-    if (counter2 == 1000) // Triggered 10 times per second
+    // Triggered 10 times per second
+    if (counter2 == 1000)
     {
         txBuffer[3] = voltage >> 2 | 0b00000111;
         txBuffer[4] = ((voltage << 3) & 0xFF) | 0b00000111;
+        
+        txBuffer[5] = current >> 2 | 0b00000111;
+        txBuffer[6] = ((current << 3) & 0xFF) | 0b00000111;
 
         // Send whatever is in the TX buffer
         sendTxBuffer();

@@ -1,31 +1,41 @@
 /*
  * adc.c
  *
- * Created: 8/4/2015
  * Author: Michel Robijns
  * 
- * This file is part of avrplane which is released under the MIT license. 
+ * This file is part of avr-telemetry which is released under the MIT license. 
  * See the file LICENSE or go to http://opensource.org/licenses/MIT for full
  * license details.
  */
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-
 #include "adc.h"
 #include "serial.h"
 
-uint32_t accumulator = 0;
-uint16_t samples = 0;
+#define SAMPLES 250
+
+void selectADCChannel(uint8_t channel);
+
+uint32_t accumulatorADC0 = 0;
+uint32_t accumulatorADC1 = 0;
+
+uint16_t samplesADC0 = 0;
+uint16_t samplesADC1 = 0;
+
 uint16_t voltage;
+uint16_t current;
 
 void setupADC(void)
 {
-    // Select the reference voltage to VCC //the internal 1.1 V reference
-    ADMUX = (1 << REFS0);// | (1 << REFS1);
+    // Select the reference voltage to VCC
+    ADMUX = (1 << REFS0);
     
     // Set ADC5 to as input channel
-    ADMUX |= (1 << MUX0) | (1 << MUX2);
+    //ADMUX |= (1 << MUX0) | (1 << MUX2);
+    
+    // Set ADC0 to as input channel
+    ADMUX |= (1 << MUX0);
     
     // Enable the ADC
     ADCSRA = (1 << ADEN);
@@ -43,7 +53,7 @@ void setupADC(void)
     startConversion();
 }
 
-// Conversion must be started manually
+// Conversion will be started manually to control the sampling rate
 void startConversion(void)
 {
     // ADC start conversion
@@ -51,13 +61,20 @@ void startConversion(void)
 }
 
 // Update the voltage if enough samples have been accumulated and start a new conversion
-void updateADCs(void)
+void updateADC(void)
 {
-    if (samples == 250)
+    if (samplesADC0 == SAMPLES)
     {
-        voltage = accumulator / samples;
-        accumulator = 0;
-        samples = 0;
+        voltage = accumulatorADC0 / samplesADC0;
+        accumulatorADC0 = 0;
+        samplesADC0 = 0;
+    }
+    
+    if (samplesADC1 == SAMPLES)
+    {
+        current = accumulatorADC1 / samplesADC1;
+        accumulatorADC1 = 0;
+        samplesADC1 = 0;
     }
 
     startConversion();
@@ -66,6 +83,40 @@ void updateADCs(void)
 // ADC Conversion Complete Interrupt
 ISR(ADC_vect)
 {
-    accumulator += ADC;
-    samples++;
+    // Get current channel
+    uint8_t channel = ADMUX & 0b00000111;
+    
+    switch (channel) {
+        case 0:
+            accumulatorADC0 += ADC;
+            samplesADC0++;
+            break;
+        case 1:
+            accumulatorADC1 += ADC;
+            samplesADC1++;
+            break;
+//         case 2:
+//             ;
+//             break;
+//         case 3:
+//             ;
+//             break;
+//         case 4:
+//             ;
+//             break;
+//         case 5:
+//             ;
+//             break;
+    }
+    
+    // Select the next channel
+    if (channel == 1)
+        selectADCChannel(0);
+    else
+        selectADCChannel(channel + 1);
+}
+
+void selectADCChannel(uint8_t channel)
+{
+    ADMUX = (ADMUX & 0b11111000) | (channel & 0b00000111);
 }

@@ -1,10 +1,9 @@
 /*
  * timers.c
  *
- * Created: 8/4/2015
  * Author: Michel Robijns
  * 
- * This file is part of avrplane which is released under the MIT license.
+ * This file is part of avr-telemetry which is released under the MIT license.
  * See the file LICENSE or go to http://opensource.org/licenses/MIT for full
  * license details.
  */
@@ -12,7 +11,6 @@
 #include <avr/io.h>
 #include <string.h>
 #include <avr/interrupt.h>
-
 #include "timers.h"
 
 void setupTimers(void)
@@ -47,11 +45,9 @@ void setupTimers(void)
 }
 
 // Counter0 Output Compare A Interrupt
-// This Interrupt Service Routine (ISR) is triggered exactly 500 times per second
 // ISR(TIMER0_COMPA_vect)
 // {
-//     // Call doAt500Hz() defined in main.c
-//     doAt500Hz();
+//     ;
 // }
 
 // Counter1 Output Compare A Interrupt
