@@ -16,12 +16,12 @@
 #include <termios.h>
 #include "serial.h"
 
-#define PORT "/dev/ttyACM0"
+#define PORT "/dev/tty.SLAB_USBtoUART"
 #define BAUD B19200
 
 struct serialPort openSerial(void)
 {
-    struct serialPort serialPort = {-1, "", ""};
+    struct serialPort serialPort = {-1, "", "", ""};
     
     struct termios options; // Serial options
     
@@ -62,6 +62,9 @@ struct serialPort openSerial(void)
         {
             //return 0;
         }
+    } else {
+        fprintf(stderr, "Could not open serial port.\n");
+        exit(EXIT_FAILURE);
     }
     
     return serialPort;
@@ -81,7 +84,7 @@ void sendBytes(struct serialPort *serialPort)
 
 void readBytes(struct serialPort *serialPort)
 {
-    int i = 0;
+    int i = 0, j = 0, readingDebugMessage = 0;
     int bytes;
     char c;
 
@@ -89,13 +92,25 @@ void readBytes(struct serialPort *serialPort)
         bytes = read(serialPort->fd, &c, 1);
 
         if (bytes > 0)
-        {
-            if (c != '\0')
+        {            
+            if (c == 'L')
+            {
+                readingDebugMessage = 1;
+            }
+            
+            if (!readingDebugMessage)
             {
                 serialPort->bufferRX[i] = c;
-            } 
-
-            i++;
+                i++;
+            }
+            
+            if (readingDebugMessage)
+            {
+                if (c == '\n') readingDebugMessage = 0;
+                
+                serialPort->bufferRSSI[j] = c;
+                j++;
+            }
         }
-    } while (c != '\0' && i < BUFFER_SIZE);
+    } while (c != '\0' && i < BUFFER_SIZE);    
 }

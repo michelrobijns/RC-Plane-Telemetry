@@ -17,6 +17,7 @@ struct serialPort {
     int fd;
     char bufferRX[15];
     char bufferTX[15];
+    char bufferRSSI[200];
 };
 
 struct serialPort openSerial(void);
