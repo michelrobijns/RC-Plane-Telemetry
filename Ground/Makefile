@@ -10,7 +10,7 @@ dependencies = serial.h
 objects = main.o serial.o
 
 cc = /usr/bin/gcc
-cFlags = -I -g -Wall -Os -Wextra -std=gnu99 -pthread
+cFlags = -I -g -Wall -Os -Wextra -std=gnu99 -pthread -lm
 
 all: $(target)
 

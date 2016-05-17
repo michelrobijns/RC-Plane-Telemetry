@@ -5,8 +5,8 @@
 #
 
 target = main
-dependencies = timers.h serial.h adc.h
-objects = main.o timers.o serial.o adc.o
+dependencies = timers.h serial.h adc.h i2c.h bmp.h
+objects = main.o timers.o serial.o adc.o i2c.o bmp.o
 
 microcontroller = 328p
 programmerType = arduino

@@ -14,6 +14,7 @@
 #include <avr/io.h>
 
 void setupTimers(void);
-extern void doAt10kHz(void);
+extern void doAt1000Hz(void);
+extern void doAt10Hz(void);
 
 #endif

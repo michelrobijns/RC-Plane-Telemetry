@@ -13,7 +13,7 @@
 #include "adc.h"
 #include "serial.h"
 
-#define SAMPLES 250
+#define SAMPLES 100
 
 void selectADCChannel(uint8_t channel);
 

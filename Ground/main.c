@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include <pthread.h>
 #include "serial.h"
+#include "math.h"
 
 // Frequency of loop iterations in Herz
 #define FREQ_SERIAL_READ 1000
@@ -29,10 +30,12 @@ void *serialWriter(void *argument);
 void *terminalWriter(void *argument);
 void getVoltage();
 void getCurrent();
+void getPressure();
 void getRSSI();
 
 double voltage = 0;
 double current = 0;
+int32_t pressure = 0;
 int RSSI[4];
 
 struct serialPort serialPort;
@@ -94,12 +97,21 @@ void* terminalWriter(__attribute__ ((unused)) void *argument)
     {
         getVoltage();
         getCurrent();
+        getPressure();
         getRSSI();
+        
+        float temp;
+        int altitude;
+    
+        temp = (float) pressure / 101325;
+        temp = 1 - pow(temp, 0.19029);
+        altitude = round(44330 * temp * 10);
 
         // Print terminal output
         printf("Volts: %5.2f V     ", voltage);
         printf("Amps: % 4.1f A     ", (current < 0) ? 0 : current);
         printf("Power: % 3.0f W     ", voltage * ((current < 0) ? 0 : current));
+        printf("Altitude: % 4d m     ", (int) round(altitude / 10.0));
         printf("L/R RSSI: %3d/%3d     ", RSSI[0], RSSI[1]);
         printf("L/R noise: %3d/%3d", RSSI[2], RSSI[3]);
         printf("\r");
@@ -114,18 +126,31 @@ void* terminalWriter(__attribute__ ((unused)) void *argument)
 
 void getVoltage()
 {
-    uint8_t ADCValue2 = (serialPort.bufferRX[3] >> 3) & 0b00011111;
-    uint8_t ADCValue1 = (serialPort.bufferRX[4] >> 3) & 0b00011111;
+    uint8_t ADCValue2 = (serialPort.bufferRX[0] >> 3) & 0b00011111;
+    uint8_t ADCValue1 = (serialPort.bufferRX[1] >> 3) & 0b00011111;
     uint16_t ADC = ADCValue1 | (ADCValue2 << 5);
     voltage = ADC / 1023.0 * VCC * DIVISOR;
 }
 
 void getCurrent()
 {
-    uint8_t ADCValue2 = (serialPort.bufferRX[5] >> 3) & 0b00011111;
-    uint8_t ADCValue1 = (serialPort.bufferRX[6] >> 3) & 0b00011111;
+    uint8_t ADCValue2 = (serialPort.bufferRX[2] >> 3) & 0b00011111;
+    uint8_t ADCValue1 = (serialPort.bufferRX[3] >> 3) & 0b00011111;
     uint16_t ADC = ADCValue1 | (ADCValue2 << 5);
     current = ((.0049 * ADC) - 2.5) / 0.066;   
+}
+
+void getPressure()
+{
+    uint8_t ADCValue6 = (serialPort.bufferRX[4] >> 2) & 0b00111111;
+    uint8_t ADCValue5 = (serialPort.bufferRX[5] >> 2) & 0b00111111;
+    uint8_t ADCValue4 = (serialPort.bufferRX[6] >> 2) & 0b00111111;
+    uint8_t ADCValue3 = (serialPort.bufferRX[7] >> 2) & 0b00111111;
+    uint8_t ADCValue2 = (serialPort.bufferRX[8] >> 2) & 0b00111111;
+    uint8_t ADCValue1 = (serialPort.bufferRX[9] >> 2) & 0b00000011;
+    
+    int32_t ADC = ADCValue1 | (ADCValue2 << 2) | (ADCValue3 << 8) | (ADCValue4 << 14) | (ADCValue5 << 20) | (ADCValue6 << 26);
+    pressure = ADC;
 }
 
 void getRSSI()
