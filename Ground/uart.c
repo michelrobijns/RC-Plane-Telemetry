@@ -1,11 +1,11 @@
 /*
- * serial.c
+ * uart.c
  *
  * Author: Michel Robijns
  *
- * This file is part of avr-telemetry which is released under the MIT license.
- * See the file LICENSE or go to http://opensource.org/licenses/MIT for full
- * license details.
+ * This file is part of RC-Plane-Telemetry which is released under the MIT
+ * license. See the file LICENSE or go to http://opensource.org/licenses/MIT
+ * for full license details.
  */
 
 #include <stdio.h>
@@ -14,7 +14,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <termios.h>
-#include "serial.h"
+#include "uart.h"
 
 #define PORT "/dev/ttyACM0"
 #define BAUD B19200

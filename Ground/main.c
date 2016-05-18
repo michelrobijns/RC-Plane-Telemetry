@@ -3,9 +3,9 @@
  *
  * Author: Michel Robijns
  *
- * This file is part of avr-telemetry which is released under the MIT license.
- * See the file LICENSE or go to http://opensource.org/licenses/MIT for full
- * license details.
+ * This file is part of RC-Plane-Telemetry which is released under the MIT
+ * license. See the file LICENSE or go to http://opensource.org/licenses/MIT
+ * for full license details.
  */
 
 #include <stdio.h>
@@ -13,16 +13,16 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <pthread.h>
-#include "serial.h"
+#include "uart.h"
 #include "math.h"
 
 // Frequency of loop iterations in Herz
-#define FREQ_SERIAL_READ 1000
-#define FREQ_SERIAL_WRITE 50
+#define FREQ_SERIAL_READ    1000
+#define FREQ_SERIAL_WRITE   50
 #define FREQ_TERMINAL_WRITE 10
 
 // Constants for computing the battery voltage from the received ADC value
-#define VCC 4.994
+#define VCC     4.994
 #define DIVISOR 3.083
 
 void *serialReader(void *argument);
@@ -36,7 +36,11 @@ void getRSSI();
 double voltage = 0;
 double current = 0;
 int32_t pressure = 0;
-int RSSI[4];
+int RSSI[4] = {0, 0, 0, 0};
+int altitudeTotal = 0;
+int altitudeSetToZero = 0;
+int altitudeOffset = 0;
+int samples = 0;
 
 struct serialPort serialPort;
 
@@ -105,7 +109,21 @@ void* terminalWriter(__attribute__ ((unused)) void *argument)
     
         temp = (float) pressure / 101325;
         temp = 1 - pow(temp, 0.19029);
-        altitude = round(44330 * temp * 10);
+        altitude = round(44330 * temp * 10) - altitudeOffset;
+        
+        if (!altitudeSetToZero)
+        {
+            samples++;
+            
+            if (samples > 10) {
+                altitudeTotal += altitude;
+            }
+            
+            if (samples == 110) {
+                altitudeOffset = altitudeTotal / 100;
+                altitudeSetToZero = 1;
+            }
+        }
 
         // Print terminal output
         printf("Volts: %5.2f V     ", voltage);
@@ -114,7 +132,7 @@ void* terminalWriter(__attribute__ ((unused)) void *argument)
         printf("Altitude: % 4d m     ", (int) round(altitude / 10.0));
         printf("L/R RSSI: %3d/%3d     ", RSSI[0], RSSI[1]);
         printf("L/R noise: %3d/%3d", RSSI[2], RSSI[3]);
-        printf("\n");
+        printf("\r");
         
         fflush(stdout);
         
@@ -138,7 +156,6 @@ void getCurrent()
     uint8_t ADCValue1 = (serialPort.bufferRX[3] >> 3) & 0b00011111;
     uint16_t ADC = ADCValue1 | (ADCValue2 << 5);
     current = ((.0049 * ADC) - 2.5) / 0.066;   
-    printf("Amps ADC: % d\n ", ADC);
 }
 
 void getPressure()
