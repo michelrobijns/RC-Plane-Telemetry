@@ -109,12 +109,12 @@ void* terminalWriter(__attribute__ ((unused)) void *argument)
 
         // Print terminal output
         printf("Volts: %5.2f V     ", voltage);
-        printf("Amps: % 4.1f A     ", (current < 0) ? 0 : current);
-        printf("Power: % 3.0f W     ", voltage * ((current < 0) ? 0 : current));
+        printf("Amps: % 4.1f A     ", current);
+        printf("Power: % 3.0f W     ", voltage * current);
         printf("Altitude: % 4d m     ", (int) round(altitude / 10.0));
         printf("L/R RSSI: %3d/%3d     ", RSSI[0], RSSI[1]);
         printf("L/R noise: %3d/%3d", RSSI[2], RSSI[3]);
-        printf("\r");
+        printf("\n");
         
         fflush(stdout);
         
@@ -138,6 +138,7 @@ void getCurrent()
     uint8_t ADCValue1 = (serialPort.bufferRX[3] >> 3) & 0b00011111;
     uint16_t ADC = ADCValue1 | (ADCValue2 << 5);
     current = ((.0049 * ADC) - 2.5) / 0.066;   
+    printf("Amps ADC: % d\n ", ADC);
 }
 
 void getPressure()

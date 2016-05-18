@@ -1,9 +1,10 @@
 /*
-   This code is based on the BMP085 library by Stefan Sicklinger published on
-   http://www.sicklinger.com
+   bmp.c
    
-   I am redistributing this modified version under the GNU General Public
-   License version 3
+   This code is based on the BMP085 library by Stefan Sicklinger published on
+   http://www.sicklinger.com.
+   
+   I am redistributing this file under the GNU General Public License.
 */
 
 #ifndef F_CPU
@@ -13,8 +14,6 @@
 #include <avr/io.h>
 #include <util/delay.h> 
 #include <util/twi.h>
-#include <stdio.h>
-#include <math.h>
 #include "bmp.h"
 #include "i2c.h"
 
@@ -25,11 +24,13 @@
 #define BMP085_R 0xEF
 #define BMP085_W 0xEE
 
-int16_t calibrationSigned[8];
-int16_t calibrationUnsigned[3];
+static volatile int16_t calibrationSigned[8];
+static volatile int16_t calibrationUnsigned[3];
 
-void bmpCalibrate(uint8_t* errorcode)
+void bmpSetup(uint8_t* errorcode)
 {
+    i2cSetup();
+        
     if (*errorcode == 0)
     {
         calibrationSigned[0] = bmpReadShort(0xAA, errorcode); // ac1
@@ -420,17 +421,4 @@ void bmpComputePressureAndTemperature(int32_t* temperature, int32_t* pressure,
     x1 = (x1 * 3038) >> 16;
     x2 = (-7357 * p) >> 16;
     *pressure = p + ((x1 + x2 + 3791) >> 4);
-}
-
-int32_t bmpComputeAltitude(int32_t pressure)
-{
-    float temp;
-    int32_t altitude;
-    
-    temp = (float) pressure / 101325;
-    temp = 1 - pow(temp, 0.19029);
-    altitude = round(44330 * temp * 10);
-    
-    // Return altitude in dm
-    return altitude;
 }

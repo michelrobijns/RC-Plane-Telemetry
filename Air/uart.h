@@ -1,5 +1,5 @@
 /*
- * timers.h
+ * uart.h
  *
  * Author: Michel Robijns
  * 
@@ -8,11 +8,11 @@
  * for full license details.
  */
 
-#ifndef TIMERS_H_INCLUDED
-#define TIMERS_H_INCLUDED
+#ifndef SERIAL_H_INCLUDED
+#define SERIAL_H_INCLUDED
 
-void timersSetup(void);
-extern void timers1000Hz(void);
-extern void timers10Hz(void);
+void uartSetup(void);
+void uartSendTxBuffer(void);
+void uartWriteTxBuffer(uint8_t location, uint8_t data);
 
 #endif

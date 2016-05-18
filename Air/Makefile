@@ -1,12 +1,16 @@
 #
-# Makefile for compiling ATmega328P projects
+# Makefile
 #
 # Author: Michel Robijns
 #
+# This file is part of RC-Plane-Telemetry which is released under the MIT
+# license. See the file LICENSE or go to http://opensource.org/licenses/MIT
+# for full license details.
+#
 
 target = main
-dependencies = timers.h serial.h adc.h i2c.h bmp.h
-objects = main.o timers.o serial.o adc.o i2c.o bmp.o
+dependencies = timers.h uart.h adc.h i2c.h bmp.h
+objects = main.o timers.o uart.o adc.o i2c.o bmp.o
 
 microcontroller = 328p
 programmerType = arduino

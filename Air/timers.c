@@ -3,17 +3,16 @@
  *
  * Author: Michel Robijns
  * 
- * This file is part of avr-telemetry which is released under the MIT license.
- * See the file LICENSE or go to http://opensource.org/licenses/MIT for full
- * license details.
+ * This file is part of RC-Plane-Telemetry which is released under the MIT
+ * license. See the file LICENSE or go to http://opensource.org/licenses/MIT
+ * for full license details.
  */
 
 #include <avr/io.h>
-#include <string.h>
 #include <avr/interrupt.h>
 #include "timers.h"
 
-void setupTimers(void)
+void timersSetup(void)
 {
     // 8-bit Timer/Counter0
     
@@ -48,14 +47,14 @@ void setupTimers(void)
 // This Interrupt Service Routine (ISR) is triggered 1000 times per second
 ISR(TIMER0_COMPA_vect)
 {
-    // Call doAt1000Hz() defined in main.c
-    doAt1000Hz();
+    // Call timers1000Hz() defined in main.c
+    timers1000Hz();
 }
 
 // Counter1 Output Compare A Interrupt
 // This Interrupt Service Routine (ISR) is triggered 10 times per second
 ISR(TIMER1_COMPA_vect)
 {
-    // Call doAt10Hz() defined in main.c
-    doAt10Hz();
+    // Call timers10Hz() defined in main.c
+    timers10Hz();
 }

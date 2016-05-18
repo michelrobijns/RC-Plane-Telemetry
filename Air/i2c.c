@@ -1,9 +1,10 @@
 /*
-   This code is based on the BMP085 library by Stefan Sicklinger published on
-   http://www.sicklinger.com
+   i2c.c
    
-   I am redistributing this modified version under the GNU General Public
-   License version 3
+   This code is based on the BMP085 library by Stefan Sicklinger published on
+   http://www.sicklinger.com.
+   
+   I am redistributing this file under the GNU General Public License.
 */
 
 #ifndef F_CPU
@@ -18,18 +19,9 @@
 void i2cSetup()
 {    
     // Set the Serial Clock Line prescalar
-    //
-    // TWPS1    TWPS0   Prescalar Value
-    //     0        0                 1
-    //     0        1                 4
-    //     1        0                16
-    //     1        1                64
     TWSR = ((0 << TWPS1) | (0 << TWPS0));
     
     // Set the frequency of the Serial Clock Line to 200 kHz
-    //
-    // F_SCL = F_CPU / (16 + 2 * TWBR * (Prescalar Value))
-    
     TWBR = 32;
 }
 

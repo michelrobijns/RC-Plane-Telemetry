@@ -1,9 +1,10 @@
 /*
-   This code is based on the BMP085 library by Stefan Sicklinger published on
-   http://www.sicklinger.com
+   i2c.h
    
-   I am redistributing this modified version under the GNU General Public
-   License version 3
+   This code is based on the BMP085 library by Stefan Sicklinger published on
+   http://www.sicklinger.com.
+   
+   I am redistributing this file under the GNU General Public License.
 */
 
 #ifndef I2C_H_INCLUDED
