@@ -19,7 +19,7 @@
 // Frequency of loop iterations in Herz
 #define FREQ_SERIAL_READ    1000
 #define FREQ_SERIAL_WRITE   50
-#define FREQ_TERMINAL_WRITE 10
+#define FREQ_TERMINAL_WRITE 5
 
 // Constants for computing the battery voltage from the received ADC value
 #define VCC     4.994
@@ -130,6 +130,7 @@ void* terminalWriter(__attribute__ ((unused)) void *argument)
         printf("Amps: % 4.1f A     ", current);
         printf("Power: % 3.0f W     ", voltage * current);
         printf("Altitude: % 4d m     ", (int) round(altitude / 10.0));
+        printf("Pressure: % d     ", pressure);
         printf("L/R RSSI: %3d/%3d     ", RSSI[0], RSSI[1]);
         printf("L/R noise: %3d/%3d", RSSI[2], RSSI[3]);
         printf("\r");

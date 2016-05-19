@@ -37,7 +37,7 @@ void timersSetup(void)
     TCCR1B |= (1 << CS11) | (1 << CS10);
     
     // Set the Output Compare Register to a counter value (TCNT1) of 25000
-    OCR1A = 25000;
+    OCR1A = 50000;
     
     // Enable Output Compare A Match interrupt
     TIMSK1 = (1 << OCIE1A);
@@ -56,5 +56,5 @@ ISR(TIMER0_COMPA_vect)
 ISR(TIMER1_COMPA_vect)
 {
     // Call timers10Hz() defined in main.c
-    timers10Hz();
+    timers5Hz();
 }

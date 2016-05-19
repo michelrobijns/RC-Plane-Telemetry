@@ -16,7 +16,7 @@
 #include <termios.h>
 #include "uart.h"
 
-#define PORT "/dev/ttyACM0"
+#define PORT "/dev/tty.SLAB_USBtoUART"
 #define BAUD B19200
 
 struct serialPort openSerial(void)

@@ -23,7 +23,7 @@
 
 // Declare external functions
 extern void timers1000Hz(void);
-extern void timers10Hz(void);
+extern void timers5Hz(void);
 
 static volatile uint16_t voltage;
 static volatile uint16_t current;
@@ -60,7 +60,7 @@ void timers1000Hz(void)
     
     samples++;
     
-    if (samples == 100)
+    if (samples == 200)
     {
         voltage = adcTotal[0] / samples;
         current = adcTotal[1] / samples;
@@ -75,7 +75,7 @@ void timers1000Hz(void)
 }
 
 // This function is called 10 times per second
-void timers10Hz(void)
+void timers5Hz(void)
 {
     bmpComputePressureAndTemperature(&temperature, &pressure, &errorCode);
     

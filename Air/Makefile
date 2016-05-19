@@ -14,13 +14,14 @@ objects = main.o timers.o uart.o adc.o i2c.o bmp.o
 
 microcontroller = 328p
 programmerType = arduino
-programmerPort = /dev/ttyACM0
+#programmerPort = /dev/ttyACM0
+programmerPort = /dev/tty.usbmodem1411
 
-cc = /usr/bin/avr-gcc
+cc = avr-gcc
 cFlags = -g -mmcu=atmega$(microcontroller) -Wall -Os -Werror -Wextra -std=gnu99
 
-objectToHex = /usr/bin/avr-objcopy
-programmer = /usr/bin/avrdude
+objectToHex = avr-objcopy
+programmer = avrdude
 
 all: flash
 

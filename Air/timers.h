@@ -13,6 +13,6 @@
 
 void timersSetup(void);
 extern void timers1000Hz(void);
-extern void timers10Hz(void);
+extern void timers5Hz(void);
 
 #endif
