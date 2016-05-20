@@ -126,14 +126,15 @@ void* terminalWriter(__attribute__ ((unused)) void *argument)
         }
 
         // Print terminal output
-        printf("Volts: %5.2f V     ", voltage);
-        printf("Amps: % 4.1f A     ", current);
-        printf("Power: % 3.0f W     ", voltage * current);
-        printf("Altitude: % 4d m     ", (int) round(altitude / 10.0));
-        printf("Pressure: % d     ", pressure);
-        printf("L/R RSSI: %3d/%3d     ", RSSI[0], RSSI[1]);
-        printf("L/R noise: %3d/%3d", RSSI[2], RSSI[3]);
-        printf("\r");
+        printf("\n\n\n\n\n\n\n\n\n\n");
+        printf("Voltage:\t%7.2f V\n\n", voltage);        
+        printf("Current:\t% 7.1f A\n\n", current);
+        printf("Power:\t\t% 7.0f W\n\n", voltage * current);
+        printf("Altitude (AGL):\t% 7d m\n", (int) round(altitude / 10.0));
+
+        //printf("Pressure: % d     ", pressure);
+        //printf("L/R RSSI: %3d/%3d     ", RSSI[0], RSSI[1]);
+        //printf("L/R noise: %3d/%3d", RSSI[2], RSSI[3]);
         
         fflush(stdout);
         
